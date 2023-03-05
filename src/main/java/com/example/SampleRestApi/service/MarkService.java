@@ -1,16 +1,11 @@
 package com.example.SampleRestApi.service;
 
 import com.example.SampleRestApi.DTO.MarkDTO;
-import com.example.SampleRestApi.Repository.MarkRepository;
-import com.example.SampleRestApi.Repository.StudentRepository;
 import com.example.SampleRestApi.models.Mark;
 import com.example.SampleRestApi.models.Student;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -18,11 +13,10 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 @Service
 public class MarkService {
 
-    private final MarkRepository markRepository;
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
-    public MarkService(MarkRepository markRepository, MongoTemplate mongoTemplate) {
-        this.markRepository = markRepository;
+    public MarkService(MongoTemplate mongoTemplate) {
+
         this.mongoTemplate = mongoTemplate;
     }
 

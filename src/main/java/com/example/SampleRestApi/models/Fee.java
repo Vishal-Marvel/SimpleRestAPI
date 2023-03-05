@@ -4,20 +4,16 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+
 import java.util.List;
 import java.util.UUID;
 @Data
-@Document(collection = "Students")
-public class Student {
-    public Student(String id) {
-        this.id = id;
-    }
-    public Student(){
-    }
+@Document(collection = "Fees")
+public class Fee {
     @Id
     private String id = UUID.randomUUID().toString();
-    private String name;
-    private Integer grade;
-    private List<String> markIds;
-    private List<String> feeIds;
+    private Integer grade, fee1, fee2, fee3, paidFee;
+    private String studentId;
+    private List<String> paymentIds;
+
 }
