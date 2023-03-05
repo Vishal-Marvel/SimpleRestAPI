@@ -1,11 +1,14 @@
 package com.example.SampleRestApi.service;
 
 import com.example.SampleRestApi.DTO.FeeDTO;
+import com.example.SampleRestApi.DTO.PaymentDTO;
 import com.example.SampleRestApi.models.Fee;
 import com.example.SampleRestApi.models.Student;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -43,6 +46,8 @@ public class FeeService {
         return detached;
 
     }
+
+//    public List<PaymentDTO> getPayment()
 
     public FeeDTO updateFee(Fee fee){
         mongoTemplate.update(Student.class)

@@ -1,10 +1,12 @@
 package com.example.SampleRestApi.controller;
 
+import com.example.SampleRestApi.DTO.FeeDTO;
 import com.example.SampleRestApi.DTO.MarkDTO;
 import com.example.SampleRestApi.DTO.StudentDTO;
 import com.example.SampleRestApi.Repository.MarkRepository;
 import com.example.SampleRestApi.Repository.StudentRepository;
 import com.example.SampleRestApi.models.Student;
+import com.example.SampleRestApi.service.FeeService;
 import com.example.SampleRestApi.service.MarkService;
 import com.example.SampleRestApi.service.StudentService;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +21,14 @@ public class StudentController {
     private final MarkService markService;
     private final MarkRepository markRepository;
     private final StudentService studentService;
+    private final FeeService feeService;
 
-    public StudentController(StudentRepository studentRepository, MarkService markService, MarkRepository markRepository, StudentService studentService) {
+    public StudentController(StudentRepository studentRepository, MarkService markService, MarkRepository markRepository, StudentService studentService, FeeService feeService) {
         this.studentRepository = studentRepository;
         this.markService = markService;
         this.markRepository = markRepository;
         this.studentService = studentService;
+        this.feeService = feeService;
     }
 
     //Get Mapping
@@ -98,7 +102,5 @@ public class StudentController {
     public String deleteStudent(@PathVariable String id){
         studentRepository.deleteById(id);
         return "Deleted";
-
-
     }
 }
