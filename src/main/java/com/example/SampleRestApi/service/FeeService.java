@@ -1,14 +1,11 @@
 package com.example.SampleRestApi.service;
 
 import com.example.SampleRestApi.DTO.FeeDTO;
-import com.example.SampleRestApi.DTO.PaymentDTO;
 import com.example.SampleRestApi.models.Fee;
 import com.example.SampleRestApi.models.Student;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -17,7 +14,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class FeeService {
 
     private final MongoTemplate mongoTemplate;
-
     public FeeService(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
@@ -29,32 +25,33 @@ public class FeeService {
         detached.setFee1(feeDTO.getFee1());
         detached.setFee2(feeDTO.getFee2());
         detached.setFee3(feeDTO.getFee3());
+        detached.setPaidFee(feeDTO.getPaidFee());
         detached.setStudentId(feeDTO.getStudentId());
         detached.setPaymentIds(feeDTO.getPaymentIds());
         return detached;
 
     }
-    public FeeDTO convertFeetoDTO(Fee fee){
+    public FeeDTO convertFeeToDTO(Fee fee){
         FeeDTO detached = new FeeDTO();
         detached.setId(fee.getId());
         detached.setGrade(fee.getGrade());
         detached.setFee1(fee.getFee1());
         detached.setFee2(fee.getFee2());
         detached.setFee3(fee.getFee3());
+        detached.setPaidFee(fee.getPaidFee());
         detached.setStudentId(fee.getStudentId());
         detached.setPaymentIds(fee.getPaymentIds());
         return detached;
 
     }
 
-//    public List<PaymentDTO> getPayment()
 
     public FeeDTO updateFee(Fee fee){
         mongoTemplate.update(Student.class)
                 .matching(where("id").is(fee.getStudentId()))
                 .apply(new Update().push("feeIds", fee.getId()))
                 .first();
-        return convertFeetoDTO(fee);
+        return convertFeeToDTO(fee);
     }
 
 

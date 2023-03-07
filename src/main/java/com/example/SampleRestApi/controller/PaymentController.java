@@ -40,6 +40,16 @@ public class PaymentController {
         return paymentService.updatePayment(save);
 
     }
+    @PutMapping("/updatePayment")
+    public PaymentDTO updatePayment(@RequestBody PaymentDTO paymentDTO){
+        return paymentService
+                .convertPaymentToDTO(paymentRepository
+                        .save(paymentService
+                                .convertDTOtoPayment(
+                                paymentDTO)
+                        )
+                );
+    }
     @DeleteMapping("/deletePayment/{pid}")
     public String deleteFee(@PathVariable String pid){
         paymentRepository.deleteById(pid);

@@ -31,15 +31,21 @@ public class FeeController {
     public List<FeeDTO> getAllFee(){
         return feeRepository.findAll()
                 .stream()
-                .map(feeService::convertFeetoDTO)
+                .map(feeService::convertFeeToDTO)
                 .collect(Collectors.toList());
     }
-    @GetMapping("/getFees/{sid}")
-    public List<FeeDTO> getFee(@PathVariable String sid){
+    @GetMapping("/getStudentFees/{sid}")
+    public List<FeeDTO> getStudentFees(@PathVariable String sid){
        return feeRepository.findAllByStudentId(sid)
                .stream()
-               .map(feeService::convertFeetoDTO)
+               .map(feeService::convertFeeToDTO)
                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/getFee/{fid}")
+    public FeeDTO getFee(@PathVariable String fid){
+        Optional<Fee> fee = feeRepository.findById(fid);
+        return feeService.convertFeeToDTO(fee.get());
     }
     @GetMapping("/getStudentPayments/{sid}")
 //    public List<PaymentDTO> getStudentPayments(@PathVariable String sid) {
@@ -74,10 +80,17 @@ public class FeeController {
                 .map(paymentService::convertPaymentToDTO)
                 .collect(Collectors.toList());
     }
-    @PostMapping("/setFee/{sid}")
+
+    @PutMapping("/updateFee")
+    public FeeDTO updateFee(@RequestBody FeeDTO feeDTO){
+        return feeService.convertFeeToDTO(feeRepository.save(feeService.convertDTOtoFee(feeDTO)));
+    }
+
+    @PostMapping("/createFee/{sid}")
     public FeeDTO getFee(@PathVariable String sid, @RequestBody FeeDTO feeDTO){
         Fee newFee = feeService.convertDTOtoFee(feeDTO);
         newFee.setStudentId(sid);
+        newFee.setPaidFee(0);
         Fee savedFee = feeRepository.save(newFee);
         return feeService.updateFee(savedFee);
     }

@@ -1,12 +1,10 @@
 package com.example.SampleRestApi.controller;
 
-import com.example.SampleRestApi.DTO.FeeDTO;
 import com.example.SampleRestApi.DTO.MarkDTO;
 import com.example.SampleRestApi.DTO.StudentDTO;
 import com.example.SampleRestApi.Repository.MarkRepository;
 import com.example.SampleRestApi.Repository.StudentRepository;
 import com.example.SampleRestApi.models.Student;
-import com.example.SampleRestApi.service.FeeService;
 import com.example.SampleRestApi.service.MarkService;
 import com.example.SampleRestApi.service.StudentService;
 import org.springframework.web.bind.annotation.*;
@@ -21,20 +19,17 @@ public class StudentController {
     private final MarkService markService;
     private final MarkRepository markRepository;
     private final StudentService studentService;
-    private final FeeService feeService;
 
-    public StudentController(StudentRepository studentRepository, MarkService markService, MarkRepository markRepository, StudentService studentService, FeeService feeService) {
+    public StudentController(StudentRepository studentRepository, MarkService markService, MarkRepository markRepository, StudentService studentService) {
         this.studentRepository = studentRepository;
         this.markService = markService;
         this.markRepository = markRepository;
         this.studentService = studentService;
-        this.feeService = feeService;
     }
 
     //Get Mapping
     @GetMapping("/getStudents")
-    public List<StudentDTO> getStudents(){
-
+        public List<StudentDTO> getStudents(){
         return studentRepository.findAll()
                 .stream()
                 .map(studentService::convertStudentToDTO)
@@ -42,7 +37,7 @@ public class StudentController {
     }
 
     @GetMapping("/getStudent/{id}")
-    public StudentDTO getStudentbyId(@PathVariable String id){
+    public StudentDTO getStudentById(@PathVariable String id){
 
         Optional<Student> result = studentRepository.findById(id);
         if (result.isPresent()) {
@@ -78,7 +73,6 @@ public class StudentController {
                 .stream()
                 .map(markService::convertMarktoDTO)
                 .collect(Collectors.toList());
-
     }
 
     @PutMapping("/updateStudent")
@@ -95,7 +89,6 @@ public class StudentController {
         createdstudent.setGrade(studentDTO.getGrade());
         Student savedstudent = studentRepository.save(createdstudent);
         return studentService.convertStudentToDTO(savedstudent);
-
     }
 
     @DeleteMapping("/deleteStudent/{id}")
