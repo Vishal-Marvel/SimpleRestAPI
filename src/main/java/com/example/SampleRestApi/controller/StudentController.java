@@ -7,6 +7,7 @@ import com.example.SampleRestApi.Repository.StudentRepository;
 import com.example.SampleRestApi.models.Student;
 import com.example.SampleRestApi.service.MarkService;
 import com.example.SampleRestApi.service.StudentService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/student")
 public class StudentController {
     private final StudentRepository studentRepository;
     private final MarkService markService;
@@ -30,11 +32,21 @@ public class StudentController {
     //Get Mapping
     @GetMapping("/getStudents")
         public List<StudentDTO> getStudents(){
+
         return studentRepository.findAll()
                 .stream()
                 .map(studentService::convertStudentToDTO)
                 .collect(Collectors.toList()); // equivalent of SELECT * from Students; db.Students.find();
     }
+//    public ModelAndView getStudents(){
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.setViewName("index");
+//        List<StudentDTO> studentDTOS = studentRepository.findAll()
+//                        .stream().map(studentService::convertStudentToDTO)
+//                        .collect(Collectors.toList());
+//        modelAndView.addObject("students", studentDTOS);
+//        return modelAndView;
+//    }
 
     @GetMapping("/getStudent/{id}")
     public StudentDTO getStudentById(@PathVariable String id){
@@ -82,6 +94,7 @@ public class StudentController {
         return  studentService.convertStudentToDTO(updatedStudent);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/createStudent")
     public StudentDTO createStudent(@RequestBody StudentDTO studentDTO){ //StudentDTO will contain Name and GRADE alone
         Student createdstudent = new Student();

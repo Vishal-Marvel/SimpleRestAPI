@@ -15,6 +15,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/fee")
+
+
 public class FeeController {
     private final FeeService feeService;
     private final FeeRepository feeRepository;

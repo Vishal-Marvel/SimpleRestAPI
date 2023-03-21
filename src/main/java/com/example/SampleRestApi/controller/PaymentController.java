@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/payment")
+
 public class PaymentController {
     private final PaymentService paymentService;
     private final PaymentRepository paymentRepository;
