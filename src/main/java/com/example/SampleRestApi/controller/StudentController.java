@@ -7,7 +7,9 @@ import com.example.SampleRestApi.Repository.StudentRepository;
 import com.example.SampleRestApi.models.Student;
 import com.example.SampleRestApi.service.MarkService;
 import com.example.SampleRestApi.service.StudentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+
 @RequestMapping("/student")
 public class StudentController {
     private final StudentRepository studentRepository;
@@ -51,14 +54,9 @@ public class StudentController {
     @GetMapping("/getStudent/{id}")
     public StudentDTO getStudentById(@PathVariable String id){
 
-        Optional<Student> result = studentRepository.findById(id);
-        if (result.isPresent()) {
-            return studentService.convertStudentToDTO(result.get());
-        }
-        else {
-            return studentService.convertStudentToDTO(new Student(id));
-        }
-
+        Student result = studentRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Student with id : " + id + " Not Found"));
+        return studentService.convertStudentToDTO(result);
     }
 
     @GetMapping("/getStudents/{grade}")
@@ -87,13 +85,18 @@ public class StudentController {
                 .collect(Collectors.toList());
     }
 
-    @PutMapping("/updateStudent")
-    public StudentDTO updateStudent(@RequestBody StudentDTO studentDTO){
-        Student detachedStudent = studentService.convertDTOtoStudent(studentDTO);
-        Student updatedStudent = studentRepository.save(detachedStudent);
+    @PutMapping("/updateStudent/{id}")
+    public StudentDTO updateStudent(@RequestBody StudentDTO studentDTO, @PathVariable String id){
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Student Not Found"));
+        student.setName(studentDTO.getName());
+        student.setGrade(studentDTO.getGrade());
+
+        Student updatedStudent = studentRepository.save(student);
         return  studentService.convertStudentToDTO(updatedStudent);
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/createStudent")
     public StudentDTO createStudent(@RequestBody StudentDTO studentDTO){ //StudentDTO will contain Name and GRADE alone

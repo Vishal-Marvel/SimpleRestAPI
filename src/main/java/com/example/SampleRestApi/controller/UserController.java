@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -46,9 +47,7 @@ public class UserController {
         new_user.setUsername(detached_user.getUsername());
         new_user.setPassword(passwordEncoder().encode(detached_user.getPassword()));
         new_user.setRoles(Set.of(roleRepository.findRoleByName("ROLE_USER")));
-
         return userService.convertUserToDTO(userRepository.save(new_user));
-
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")

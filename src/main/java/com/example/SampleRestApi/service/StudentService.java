@@ -4,8 +4,6 @@ import com.example.SampleRestApi.DTO.StudentDTO;
 import com.example.SampleRestApi.models.Student;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
 public class StudentService {
 
