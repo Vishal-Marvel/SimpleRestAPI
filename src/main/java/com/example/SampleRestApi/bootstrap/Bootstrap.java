@@ -33,7 +33,7 @@ public class Bootstrap implements CommandLineRunner {
         roles.add(admin);
         roleRepository.saveAll(roles);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        User admin_user = new User(1L, "Admin", "admin@gmail.com", "admin", passwordEncoder.encode("password"), Set.of(admin));
+        User admin_user = new User(1L, "Admin", "admin@gmail.com", "admin", passwordEncoder.encode("password"), Set.of(admin, user));
         userRepository.save(admin_user);
 
     }
