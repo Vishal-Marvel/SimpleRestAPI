@@ -96,9 +96,10 @@ public class StudentController {
         return  studentService.convertStudentToDTO(updatedStudent);
     }
 
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/createStudent")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     public StudentDTO createStudent(@RequestBody StudentDTO studentDTO){ //StudentDTO will contain Name and GRADE alone
         Student createdstudent = new Student();
         createdstudent.setName(studentDTO.getName());

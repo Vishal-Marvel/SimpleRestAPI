@@ -6,6 +6,7 @@ import com.example.SampleRestApi.Repository.UserRepository;
 import com.example.SampleRestApi.models.SQL.Role;
 import com.example.SampleRestApi.models.SQL.User;
 import com.example.SampleRestApi.service.UserService;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +33,12 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/users")
+    @GetMapping
     public List<User> users(){
         return userRepository.findAll();
     }
 
-    @PostMapping("/createUser")
+    @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
     public UserDTO create_user(@RequestBody UserDTO userDTO){
         User detached_user = userService.convertDTOToUser(userDTO);
@@ -51,7 +52,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    @PutMapping("/updateUser/{id}")
+    @PutMapping("/update/{id}")
     public UserDTO updateUser(@RequestBody UserDTO userDTO, @PathVariable Long id){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
@@ -59,6 +60,14 @@ public class UserController {
         user.setEmail(userDTO.getEmail());
         return userService.convertUserToDTO(userRepository.save(user));
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id){
+        userRepository.deleteById(id);
+        return "USER DELETED";
+    }
+
 
 
 }
