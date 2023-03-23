@@ -9,11 +9,7 @@ import java.util.UUID;
 @Data
 @Document(collection = "Students")
 public class Student {
-    public Student(String id) {
-        this.id = id;
-    }
-    public Student(){
-    }
+    public Student(){    }
     @Id
     private String id = UUID.randomUUID().toString();
     private String name;

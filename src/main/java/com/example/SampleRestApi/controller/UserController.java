@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.nio.charset.Charset;
+import java.security.Principal;
 import java.sql.SQLInput;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
@@ -48,7 +49,11 @@ public class UserController {
     public List<User> users(){
         return userRepository.findAll();
     }
-
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/currentUser")
+    public String userName(Principal principal){
+        return principal.getName();
+    }
     @PostMapping("/create")
     public UserDTO create_user(@RequestBody UserDTO userDTO) throws ConstraintException {
         User detached_user = userService.convertDTOToUser(userDTO);
@@ -90,6 +95,7 @@ public class UserController {
             throw new UnAuthorizedException("User unauthorized");
         }
     }
+
 
     @DeleteMapping("/delete/{id}")
     public String deleteUser(@PathVariable Long id){
