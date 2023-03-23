@@ -1,4 +1,4 @@
-package com.example.SampleRestApi.service;
+package com.example.SampleRestApi.security;
 
 import com.example.SampleRestApi.Repository.UserRepository;
 import com.example.SampleRestApi.models.SQL.User;
@@ -27,8 +27,8 @@ public class SecurityService implements UserDetailsService {
         Set<GrantedAuthority> authoritySet = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toSet());
-        System.out.println(authoritySet );
-        System.out.println(user);
+//        System.out.println(authoritySet );
+//        System.out.println(user);
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authoritySet);
 
     }

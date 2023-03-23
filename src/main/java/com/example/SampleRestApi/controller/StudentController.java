@@ -2,6 +2,7 @@ package com.example.SampleRestApi.controller;
 
 import com.example.SampleRestApi.DTO.MarkDTO;
 import com.example.SampleRestApi.DTO.StudentDTO;
+import com.example.SampleRestApi.Exceptions.UserNotFoundException;
 import com.example.SampleRestApi.Repository.MarkRepository;
 import com.example.SampleRestApi.Repository.StudentRepository;
 import com.example.SampleRestApi.models.Student;
@@ -13,11 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-
+@SecurityRequirement(name = "Basic Authentication")
 @RequestMapping("/student")
 public class StudentController {
     private final StudentRepository studentRepository;
@@ -32,8 +32,7 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    //Get Mapping
-    @GetMapping("/getStudents")
+    @GetMapping("")
         public List<StudentDTO> getStudents(){
 
         return studentRepository.findAll()
@@ -55,7 +54,7 @@ public class StudentController {
     public StudentDTO getStudentById(@PathVariable String id){
 
         Student result = studentRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Student with id : " + id + " Not Found"));
+                .orElseThrow(() -> new UserNotFoundException("Student with id : " + id + " Not Found"));
         return studentService.convertStudentToDTO(result);
     }
 
@@ -84,7 +83,7 @@ public class StudentController {
                 .map(markService::convertMarktoDTO)
                 .collect(Collectors.toList());
     }
-
+    @SecurityRequirement(name = "Basic Authentication")
     @PutMapping("/updateStudent/{id}")
     public StudentDTO updateStudent(@RequestBody StudentDTO studentDTO, @PathVariable String id){
         Student student = studentRepository.findById(id)
@@ -96,10 +95,8 @@ public class StudentController {
         return  studentService.convertStudentToDTO(updatedStudent);
     }
 
-//    @SecurityRequirement(name = "Bearer Authentication")
+    @SecurityRequirement(name = "Basic Authentication")
     @PostMapping("/createStudent")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-
     public StudentDTO createStudent(@RequestBody StudentDTO studentDTO){ //StudentDTO will contain Name and GRADE alone
         Student createdstudent = new Student();
         createdstudent.setName(studentDTO.getName());
@@ -107,7 +104,7 @@ public class StudentController {
         Student savedstudent = studentRepository.save(createdstudent);
         return studentService.convertStudentToDTO(savedstudent);
     }
-
+    @SecurityRequirement(name = "Basic Authentication")
     @DeleteMapping("/deleteStudent/{id}")
     public String deleteStudent(@PathVariable String id){
         studentRepository.deleteById(id);

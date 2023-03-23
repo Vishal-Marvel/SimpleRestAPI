@@ -2,11 +2,13 @@ package com.example.SampleRestApi.controller;
 
 import com.example.SampleRestApi.DTO.FeeDTO;
 import com.example.SampleRestApi.DTO.PaymentDTO;
+import com.example.SampleRestApi.Exceptions.UserNotFoundException;
 import com.example.SampleRestApi.Repository.FeeRepository;
 import com.example.SampleRestApi.Repository.PaymentRepository;
 import com.example.SampleRestApi.models.Fee;
 import com.example.SampleRestApi.service.FeeService;
 import com.example.SampleRestApi.service.PaymentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/fee")
-
-
+@SecurityRequirement(name = "Basic Authentication")
 public class FeeController {
     private final FeeService feeService;
     private final FeeRepository feeRepository;
@@ -47,8 +48,9 @@ public class FeeController {
 
     @GetMapping("/getFee/{fid}")
     public FeeDTO getFee(@PathVariable String fid){
-        Optional<Fee> fee = feeRepository.findById(fid);
-        return feeService.convertFeeToDTO(fee.get());
+        Fee fee = feeRepository.findById(fid)
+                .orElseThrow(() -> new UserNotFoundException("Fee with Id : " + fid + " Not Found"));
+        return feeService.convertFeeToDTO(fee);
     }
     @GetMapping("/getStudentPayments/{sid}")
 //    public List<PaymentDTO> getStudentPayments(@PathVariable String sid) {

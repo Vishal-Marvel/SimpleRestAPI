@@ -1,5 +1,7 @@
 package com.example.SampleRestApi.config;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.auditing.config.AuditingConfiguration;
@@ -19,6 +21,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableMethodSecurity
+@SecurityScheme(
+        name = "Basic Authentication",
+        type = SecuritySchemeType.HTTP,
+        scheme = "Basic"
+)
 public class SecurityConfig{
     @Bean
     public static PasswordEncoder passwordEncoder(){
@@ -34,9 +41,11 @@ public class SecurityConfig{
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(HttpMethod.GET).permitAll()
-                        .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST).hasRole("ADMIN")
+                        .requestMatchers("/user/**").hasRole("ADMIN")
+                        .requestMatchers("/fee/**").hasRole("USER")
+                        .requestMatchers("/payment/**").hasRole("USER")
+                        .requestMatchers("/mark/**").hasRole("USER")
+                        .requestMatchers("/student/**").hasRole("USER")
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())

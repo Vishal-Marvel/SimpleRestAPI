@@ -4,6 +4,7 @@ import com.example.SampleRestApi.DTO.MarkDTO;
 import com.example.SampleRestApi.Repository.MarkRepository;
 import com.example.SampleRestApi.models.Mark;
 import com.example.SampleRestApi.service.MarkService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/mark")
-
+@SecurityRequirement(name = "Basic Authentication")
 public class MarksController {
 
     private final MarkService markService;

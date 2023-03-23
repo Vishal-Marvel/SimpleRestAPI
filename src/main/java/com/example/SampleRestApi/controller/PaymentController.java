@@ -4,6 +4,7 @@ import com.example.SampleRestApi.DTO.PaymentDTO;
 import com.example.SampleRestApi.Repository.PaymentRepository;
 import com.example.SampleRestApi.models.Payment;
 import com.example.SampleRestApi.service.PaymentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/payment")
-
+@SecurityRequirement(name = "Basic Authentication")
 public class PaymentController {
     private final PaymentService paymentService;
     private final PaymentRepository paymentRepository;

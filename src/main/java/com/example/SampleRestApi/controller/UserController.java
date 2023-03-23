@@ -8,6 +8,7 @@ import com.example.SampleRestApi.Repository.UserRepository;
 import com.example.SampleRestApi.models.SQL.Role;
 import com.example.SampleRestApi.models.SQL.User;
 import com.example.SampleRestApi.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 import static com.example.SampleRestApi.config.SecurityConfig.passwordEncoder;
 
 @RestController
+@SecurityRequirement(name = "Basic Authentication")
 @RequestMapping("/user")
 public class UserController {
     private final UserRepository userRepository;
@@ -42,7 +44,6 @@ public class UserController {
         this.roleRepository = roleRepository;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping({"", "/", "/users"})
     public List<User> users(){
         return userRepository.findAll();
