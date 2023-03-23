@@ -44,12 +44,14 @@ public class UserController {
         this.roleRepository = roleRepository;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping({"", "/", "/users"})
     public List<User> users(){
         return userRepository.findAll();
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public UserDTO create_user(@RequestBody UserDTO userDTO) throws ConstraintException {
         User detached_user = userService.convertDTOToUser(userDTO);
         if (userRepository.findByEmailOrUsername(detached_user.getEmail(), detached_user.getUsername()).isPresent()){
@@ -65,8 +67,8 @@ public class UserController {
         new_user.setRoles(Set.of(roleRepository.findRoleByName("ROLE_USER")));
         return userService.convertUserToDTO(userRepository.save(new_user));
     }
-    @PreAuthorize("hasRole('USER')")
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('USER')")
     public UserDTO updateUser(@RequestBody UserDTO userDTO, @PathVariable Long id){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
@@ -75,6 +77,7 @@ public class UserController {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
         org.springframework.security.core.userdetails.User current_user = (org.springframework.security.core.userdetails.User) current_user_auth.getPrincipal();
+        System.out.println("UserController.updateUser");
         if (Objects.equals(current_user.getUsername(), user.getEmail()) || roles.contains("ROLE_ADMIN")) {
 
             user.setName(userDTO.getName());
@@ -92,6 +95,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteUser(@PathVariable Long id){
         userRepository.deleteById(id);
         return "USER DELETED";
