@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@SecurityRequirement(name = "Basic Authentication")
 @RequestMapping("/student")
 public class StudentController {
     private final StudentRepository studentRepository;
@@ -83,7 +82,9 @@ public class StudentController {
                 .map(markService::convertMarktoDTO)
                 .collect(Collectors.toList());
     }
-    @SecurityRequirement(name = "Basic Authentication")
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasRole('USER')")
     @PutMapping("/updateStudent/{id}")
     public StudentDTO updateStudent(@RequestBody StudentDTO studentDTO, @PathVariable String id){
         Student student = studentRepository.findById(id)
@@ -95,8 +96,9 @@ public class StudentController {
         return  studentService.convertStudentToDTO(updatedStudent);
     }
 
-    @SecurityRequirement(name = "Basic Authentication")
     @PostMapping("/createStudent")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasRole('USER')")
     public StudentDTO createStudent(@RequestBody StudentDTO studentDTO){ //StudentDTO will contain Name and GRADE alone
         Student createdstudent = new Student();
         createdstudent.setName(studentDTO.getName());
@@ -104,8 +106,9 @@ public class StudentController {
         Student savedstudent = studentRepository.save(createdstudent);
         return studentService.convertStudentToDTO(savedstudent);
     }
-    @SecurityRequirement(name = "Basic Authentication")
     @DeleteMapping("/deleteStudent/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasRole('USER')")
     public String deleteStudent(@PathVariable String id){
         studentRepository.deleteById(id);
         return "Deleted";

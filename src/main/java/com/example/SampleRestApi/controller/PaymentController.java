@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/payment")
-@SecurityRequirement(name = "Basic Authentication")
+@SecurityRequirement(name = "Bearer Authentication")
 public class PaymentController {
     private final PaymentService paymentService;
     private final PaymentRepository paymentRepository;
