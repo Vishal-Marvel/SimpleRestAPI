@@ -1,5 +1,7 @@
 package com.example.SampleRestApi.controller;
 
+import com.example.SampleRestApi.DTO.JWTResponseDTO;
+import com.example.SampleRestApi.DTO.LoginDTO;
 import com.example.SampleRestApi.DTO.UserDTO;
 import com.example.SampleRestApi.Exceptions.ConstraintException;
 import com.example.SampleRestApi.Exceptions.UnAuthorizedException;
@@ -10,6 +12,7 @@ import com.example.SampleRestApi.models.SQL.User;
 import com.example.SampleRestApi.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -32,7 +35,6 @@ import java.util.stream.Collectors;
 import static com.example.SampleRestApi.config.SecurityConfig.passwordEncoder;
 
 @RestController
-@SecurityRequirement(name = "Basic Authentication")
 @RequestMapping("/user")
 public class UserController {
     private final UserRepository userRepository;
@@ -44,19 +46,26 @@ public class UserController {
         this.userService = userService;
         this.roleRepository = roleRepository;
     }
-
     @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
+
     @GetMapping({"", "/", "/users"})
     public List<User> users(){
         return userRepository.findAll();
     }
+
     @PreAuthorize("hasRole('USER')")
+    @SecurityRequirement(name = "Bearer Authentication")
+
     @GetMapping("/currentUser")
     public String userName(Principal principal){
         return principal.getName();
     }
-    @PostMapping("/create")
+
     @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
+
+    @PostMapping("/create")
     public UserDTO create_user(@RequestBody UserDTO userDTO) throws ConstraintException {
         User detached_user = userService.convertDTOToUser(userDTO);
         if (userRepository.findByEmailOrUsername(detached_user.getEmail(), detached_user.getUsername()).isPresent()){
@@ -72,8 +81,11 @@ public class UserController {
         new_user.setRoles(Set.of(roleRepository.findRoleByName("ROLE_USER")));
         return userService.convertUserToDTO(userRepository.save(new_user));
     }
-    @PutMapping("/update/{id}")
+
     @PreAuthorize("hasRole('USER')")
+    @SecurityRequirement(name = "Bearer Authentication")
+
+    @PutMapping("/update/{id}")
     public UserDTO updateUser(@RequestBody UserDTO userDTO, @PathVariable Long id){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
@@ -82,7 +94,6 @@ public class UserController {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
         org.springframework.security.core.userdetails.User current_user = (org.springframework.security.core.userdetails.User) current_user_auth.getPrincipal();
-        System.out.println("UserController.updateUser");
         if (Objects.equals(current_user.getUsername(), user.getEmail()) || roles.contains("ROLE_ADMIN")) {
 
             user.setName(userDTO.getName());
@@ -99,14 +110,20 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public String deleteUser(@PathVariable Long id){
         userRepository.deleteById(id);
         return "USER DELETED";
     }
 
+    @PostMapping("/login")
+    public JWTResponseDTO login(@RequestBody @Valid LoginDTO loginDTO){
+        String token = userService.login(loginDTO);
+        return new JWTResponseDTO(token);
 
+    }
 
 }

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/mark")
-@SecurityRequirement(name = "Basic Authentication")
+@SecurityRequirement(name = "Bearer Authentication")
 public class MarksController {
 
     private final MarkService markService;
