@@ -2,7 +2,7 @@ package com.example.SampleRestApi.service;
 
 import com.example.SampleRestApi.DTO.LoginDTO;
 import com.example.SampleRestApi.DTO.UserDTO;
-import com.example.SampleRestApi.models.SQL.User;
+import com.example.SampleRestApi.models.User.User;
 import com.example.SampleRestApi.security.JWTTokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

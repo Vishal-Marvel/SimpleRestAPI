@@ -1,4 +1,4 @@
-package com.example.SampleRestApi.models.SQL;
+package com.example.SampleRestApi.models.User;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;

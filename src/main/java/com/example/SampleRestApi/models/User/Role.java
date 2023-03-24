@@ -1,4 +1,4 @@
-package com.example.SampleRestApi.models.SQL;
+package com.example.SampleRestApi.models.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

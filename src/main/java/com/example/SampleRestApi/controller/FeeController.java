@@ -9,6 +9,7 @@ import com.example.SampleRestApi.models.Fee;
 import com.example.SampleRestApi.service.FeeService;
 import com.example.SampleRestApi.service.PaymentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/fee")
 @SecurityRequirement(name = "Bearer Authentication")
+@Tag(name = "CRUD REST APIs for Student Fees Management")
 public class FeeController {
     private final FeeService feeService;
     private final FeeRepository feeRepository;
