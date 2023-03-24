@@ -5,6 +5,7 @@ import com.example.SampleRestApi.Repository.MarkRepository;
 import com.example.SampleRestApi.models.Mark;
 import com.example.SampleRestApi.service.MarkService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/mark")
 @SecurityRequirement(name = "Bearer Authentication")
+@Tag(name = "CRUD REST APIs for Student Marks Management")
+
 public class MarksController {
 
     private final MarkService markService;

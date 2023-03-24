@@ -1,11 +1,8 @@
 package com.example.SampleRestApi.DTO;
 
-import com.example.SampleRestApi.models.SQL.Role;
-import lombok.AllArgsConstructor;
+import com.example.SampleRestApi.models.User.Role;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Data

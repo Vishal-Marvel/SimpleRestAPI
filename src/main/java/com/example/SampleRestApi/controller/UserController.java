@@ -4,38 +4,31 @@ import com.example.SampleRestApi.DTO.JWTResponseDTO;
 import com.example.SampleRestApi.DTO.LoginDTO;
 import com.example.SampleRestApi.DTO.UserDTO;
 import com.example.SampleRestApi.Exceptions.ConstraintException;
-import com.example.SampleRestApi.Exceptions.UnAuthorizedException;
 import com.example.SampleRestApi.Repository.RoleRepository;
 import com.example.SampleRestApi.Repository.UserRepository;
-import com.example.SampleRestApi.models.SQL.Role;
-import com.example.SampleRestApi.models.SQL.User;
+import com.example.SampleRestApi.models.User.User;
 import com.example.SampleRestApi.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.servlet.http.HttpServletRequest;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpHeaders;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.nio.charset.Charset;
 import java.security.Principal;
-import java.sql.SQLInput;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.example.SampleRestApi.config.SecurityConfig.passwordEncoder;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name = "CRUD REST APIs for Authorization Resource")
 public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
@@ -106,7 +99,7 @@ public class UserController {
             return userService.convertUserToDTO(userRepository.save(user));
         }
         else{
-            throw new UnAuthorizedException("User unauthorized");
+            throw new AccessDeniedException("User is unauthorized");
         }
     }
 

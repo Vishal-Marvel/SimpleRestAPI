@@ -9,6 +9,7 @@ import com.example.SampleRestApi.models.Student;
 import com.example.SampleRestApi.service.MarkService;
 import com.example.SampleRestApi.service.StudentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/student")
+@Tag(name = "CRUD REST APIs for Student Management")
+
 public class StudentController {
     private final StudentRepository studentRepository;
     private final MarkService markService;
