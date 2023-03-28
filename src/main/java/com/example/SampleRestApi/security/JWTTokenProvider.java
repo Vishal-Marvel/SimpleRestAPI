@@ -4,6 +4,7 @@ import com.example.SampleRestApi.Exceptions.APIException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -57,7 +58,7 @@ public class JWTTokenProvider {
                return true;
           }
           catch (MalformedJwtException e){
-               throw new APIException("Invalid Javascript Web Token", HttpStatus.BAD_REQUEST);
+               throw new APIException("Invalid Javascript Web Token", HttpStatus.UNAUTHORIZED);
           }
           catch (ExpiredJwtException e){
                throw new APIException("Expired Javascript Web Token", HttpStatus.BAD_REQUEST);
@@ -67,6 +68,9 @@ public class JWTTokenProvider {
           }
           catch (IllegalArgumentException e){
                throw new APIException("Javascript Web Token claims are empty", HttpStatus.BAD_REQUEST);
+          }
+          catch (SignatureException e){
+               throw new APIException("Invalid JWT", HttpStatus.BAD_REQUEST);
           }
      }
 
