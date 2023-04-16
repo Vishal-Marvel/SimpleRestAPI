@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @SecurityScheme(
         name = "Bearer Authentication",
-        type = SecuritySchemeType.HTTP,
+        type = SecuritySchemeType.OAUTH2,
         bearerFormat = "JWT",
         scheme = "bearer"
 )
