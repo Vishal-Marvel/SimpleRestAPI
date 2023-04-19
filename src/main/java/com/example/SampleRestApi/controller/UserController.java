@@ -2,6 +2,7 @@ package com.example.SampleRestApi.controller;
 
 import com.example.SampleRestApi.DTO.JWTResponseDTO;
 import com.example.SampleRestApi.DTO.LoginDTO;
+import com.example.SampleRestApi.DTO.RedirectDTO;
 import com.example.SampleRestApi.DTO.UserDTO;
 import com.example.SampleRestApi.Exceptions.ConstraintException;
 import com.example.SampleRestApi.Repository.RoleRepository;
@@ -10,14 +11,19 @@ import com.example.SampleRestApi.models.User.User;
 import com.example.SampleRestApi.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.extern.java.Log;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -26,7 +32,7 @@ import java.util.Set;
 
 import static com.example.SampleRestApi.config.SecurityConfig.passwordEncoder;
 
-@RestController
+@Controller
 @RequestMapping("/user")
 @Tag(name = "CRUD REST APIs for Authorization Resource")
 public class UserController {
@@ -41,15 +47,13 @@ public class UserController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-
-    @GetMapping({"", "/", "/users"})
+    @GetMapping( "/users")
     public List<User> users(){
         return userRepository.findAll();
     }
 
     @PreAuthorize("hasRole('USER')")
     @SecurityRequirement(name = "Bearer Authentication")
-
     @GetMapping("/currentUser")
     public String userName(Principal principal){
         return principal.getName();
@@ -57,7 +61,6 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-
     @PostMapping("/create")
     public UserDTO create_user(@RequestBody UserDTO userDTO) throws ConstraintException {
         User detached_user = userService.convertDTOToUser(userDTO);
@@ -77,7 +80,6 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER')")
     @SecurityRequirement(name = "Bearer Authentication")
-
     @PutMapping("/update/{id}")
     public UserDTO updateUser(@RequestBody UserDTO userDTO, @PathVariable Long id){
         User user = userRepository.findById(id)
@@ -105,17 +107,26 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "Bearer Authentication")
-
     @DeleteMapping("/delete/{id}")
     public String deleteUser(@PathVariable Long id){
         userRepository.deleteById(id);
         return "USER DELETED";
     }
 
-    @PostMapping("/login")
-    public JWTResponseDTO login(@RequestBody @Valid LoginDTO loginDTO){
+    @GetMapping("/login")
+    public String auth_login(Model model, HttpServletRequest request){
+        LoginDTO loginDTO = new LoginDTO();
+        loginDTO.setTargetUrl(request.getParameter("targetUrl"));
+        model.addAttribute("login", loginDTO);
+        return "auth/login";
+    }
+
+    @PostMapping("/user-login")
+    public String login(@ModelAttribute LoginDTO loginDTO){
+
         String token = userService.login(loginDTO);
-        return new JWTResponseDTO(token);
+        System.out.println("loginDTO = " + loginDTO.getTargetUrl());
+        return "redirect:"+loginDTO.getTargetUrl();
 
     }
 

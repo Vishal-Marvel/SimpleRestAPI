@@ -1,27 +1,33 @@
 package com.example.SampleRestApi.config;
 
+import com.example.SampleRestApi.DTO.StudentDTO;
 import com.example.SampleRestApi.security.JWTAuthEntryPnt;
 import com.example.SampleRestApi.security.JWTAuthFilter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.ui.Model;
 
 @Configuration
 @EnableMethodSecurity
 @SecurityScheme(
         name = "Bearer Authentication",
-        type = SecuritySchemeType.OAUTH2,
+        type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
         scheme = "bearer"
 )
@@ -55,15 +61,28 @@ public class SecurityConfig{
                         .requestMatchers("/student/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPnt))
-                .addFilterAfter(authFilter, ExceptionTranslationFilter.class)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(Customizer.withDefaults())
+                .formLogin()
+                    .loginPage("/user/login")
+                    .permitAll()
+                    .and()
+                .logout()
+                    .permitAll()
+                    .and()
+                .exceptionHandling().authenticationEntryPoint(((request, response, authException) -> {
+                    response.sendRedirect("/login");
+                }))
+                .and()
                 .build();
+
+//                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+//                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPnt))
+//                .addFilterAfter(authFilter, ExceptionTranslationFilter.class)
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .build();
+
     }
-
-
 
 }

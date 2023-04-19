@@ -10,6 +10,9 @@ import java.util.UUID;
 @Data
 @Document(collection = "Fees")
 public class Fee {
+    public Fee() {
+    }
+
     @Id
     private String id = UUID.randomUUID().toString();
     private Integer grade, fee1, fee2, fee3, paidFee;

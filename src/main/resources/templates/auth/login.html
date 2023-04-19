@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Login Page</title>
+  <style>
+    body {
+      background-color: purple;
+      font-family: "Segoe UI";
+    }
+    .login {
+      background-color: white;
+      width: 400px;
+      font-family: "Segoe UI";
+      margin: 0 auto;
+      margin-top: 50px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+    .login h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .form-group input {
+      width: 90%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+    .form-group input:focus {
+      outline: none;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 0 5px #007bff;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-in-out;
+    }
+    .submit-btn:hover {
+      background-color: #0069d9;
+    }
+  </style>
+</head>
+<body>
+<div class="login">
+  <h2>Login</h2>
+  <form th:action="@{/user/user-login}" method="post" th:object="${login}">
+    <input type="hidden" th:field="*{targetUrl}" th:value="*{targetUrl}">
+    <div class="form-group">
+      <label for="username">Username Or Email:</label>
+      <input type="text" id="username" th:field="*{usernameOrEmail}" name="username" placeholder="Enter username" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" th:field="*{password}" name="password" placeholder="Enter password" required>
+    </div>
+    <button class="submit-btn" type="submit">Submit</button>
+  </form>
+</div>
+</body>
+</html>

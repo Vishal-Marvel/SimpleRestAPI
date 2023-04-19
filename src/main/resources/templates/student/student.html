@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+</head>
+<body>
+
+
+<div class="container" style="margin-top: 50px; padding: 50px">
+  <h1>Student Registration Form</h1>
+
+    <label for="name">Name:</label>
+    <input class="form-control" type="text" id="name" name="name" disabled th:field="${student.name}">
+
+    <label for="grade">Grade:</label>
+    <input class="form-control" type="number" id="grade" name="grade" disabled min="1" max="12" th:field="${student.grade}">
+    <br>
+  <label for="grade">Marks:</label>
+  <a th:href="@{/student/getStudentMarks/{id}(id=${student.id})}" th:text="Marks"></a>
+  <br>
+  <label for="grade">Fees:</label>
+  <a th:href="@{/fee/getStudentFees/{sid}(sid=${student.id})}" th:text="Fees"></a>  <br>
+  <a th:href="@{/student/updateStudent/{id}(id=${student.id})}" th:text="Update"></a>
+</div>
+</body>
+</html>
